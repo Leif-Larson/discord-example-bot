@@ -16,7 +16,22 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
-  var jokeStart = RegExp('knock knock*', 'i');
+  var jokeStart = RegExp('knock knock*', 'i')
+	
+	//  if they have sent 10 messages in the last 5 
+	var recentMessages = message.author.messages.filter(m => m.date_created > (-5e3+new Date()));
+	if (recentMessages.length > 10) {
+		// mute the user
+		message.author.roles.append("Muted");
+		
+		// unmute after a minute
+		setTimeout(() => {message.author.roles.remove("Muted")}, 6e4)
+		
+		// delete all the spam messages
+		for (let m of recentMessages) {
+			m.delete();
+		}
+	}
 	
 	var blacklisted = false;
 	for (let name of blacklistedNames) {
