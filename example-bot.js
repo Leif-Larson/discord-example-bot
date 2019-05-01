@@ -8,12 +8,31 @@ var jokeUser = "";
 var jokeStage = 0;
 var jokeContent = "";
 
+var blacklistedNames = ["John", "James"];
+var whitelistedRoles = ["Admin"];
+
 client.on('ready', () => {
   console.log(`Logged in successfully`);
 });
 
 client.on('message', msg => {
   var jokeStart = RegExp('knock knock*', 'i');
+	
+	var blacklisted = false;
+	for (let name of blacklistedNames) {
+		if (msg.author.name == name) {
+			blacklisted = true;
+		}
+	}
+	if (blacklisted) return;
+	
+	var whitelisted = false
+	for (let role of whitelistedRoles) {
+		if (msg.author.roles.includes(role)) {
+			whitelisted = true;
+		}
+	}
+	if (!whitelisted) return;
   
   // if command detected and no jokes in progress
   if (jokeStart.test(msg.content) && !jokeStage) {
